@@ -1,0 +1,547 @@
+@import './fonts/fonts.css';
+
+/*
+ * ZERLEG - the fullscreen alert, themeable.
+ *
+ * The chat window is one fixed design. This screen is not: it is your machine
+ * being taken over, so the receiver picks the look. Each theme sets the same
+ * handful of variables and, where it needs to, repurposes the three decoration
+ * layers (wedge / disc / bars) that the markup always provides.
+ *
+ * Defaults below ARE the "signal" theme.
+ */
+
+:root {
+  --bg: #0a0f14;
+  --surface: #132029;
+  --fg: #d9e6e4;
+  --fg-soft: rgba(217, 230, 228, 0.62);
+  --accent: #2de1a3;
+  --accent-soft: rgba(45, 225, 163, 0.13);
+  --btn-fg: #06130f;
+  --btn-bg: #2de1a3;
+  --btn-shadow: transparent;
+
+  --display: 'Oswald', 'Segoe UI Semibold', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', Consolas, monospace;
+  --title-font: var(--display);
+  --body-font: var(--display);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.urgent-body {
+  overflow: hidden;
+  /* A wall, not a document. */
+  user-select: none;
+  cursor: default;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: var(--body-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.alert {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  animation: slam 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slam {
+  from {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+}
+
+/* Decoration layers: off unless a theme asks for them. */
+.alert__wedge,
+.alert__disc,
+.alert__bars {
+  display: none;
+  position: absolute;
+  pointer-events: none;
+}
+
+.alert__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 6vmin 8vmin;
+}
+
+.alert__top {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.alert__bottom {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  padding-top: 3vmin;
+}
+
+.alert__tag {
+  font-family: var(--mono);
+  font-size: clamp(0.68rem, 1.25vmin, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.6vmin;
+}
+
+.alert__title {
+  font-family: var(--title-font);
+  font-size: clamp(3.2rem, 12vmin, 10rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--fg);
+}
+
+.alert__from {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6vmin;
+  font-size: clamp(1rem, 2.4vmin, 1.9rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 2.4vmin;
+}
+
+.alert__from span {
+  font-family: var(--mono);
+  font-size: clamp(0.62rem, 1.2vmin, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--fg-soft);
+  text-transform: uppercase;
+}
+
+.alert__body {
+  max-width: 82%;
+  /* Long messages step down so a wall of text still fits one screen. */
+  font-size: clamp(1.5rem, 5.2vmin, 4.4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  max-height: 34vh;
+  overflow-y: auto;
+  padding-bottom: 0.2em;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.alert__body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.alert__body::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  opacity: 0.5;
+}
+
+.alert__foot {
+  display: flex;
+  align-items: center;
+  gap: 2.2vmin;
+  margin-top: auto;
+  padding-top: 3vmin;
+}
+
+.alert__ack {
+  padding: 1.6vmin 4.6vmin;
+  font-family: var(--display);
+  font-size: clamp(0.82rem, 1.8vmin, 1.4rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0.85vmin 0.85vmin 0 var(--btn-shadow);
+  transition:
+    transform 80ms steps(2, end),
+    box-shadow 80ms steps(2, end),
+    filter 120ms ease;
+}
+
+.alert__ack:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.alert__ack:active:not(:disabled) {
+  transform: translate(0.85vmin, 0.85vmin);
+  box-shadow: 0 0 0 var(--btn-shadow);
+}
+
+.alert__ack:disabled {
+  cursor: progress;
+  opacity: 0.45;
+}
+
+.alert__queue {
+  font-family: var(--mono);
+  font-size: clamp(0.62rem, 1.25vmin, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.8vmin 1.4vmin;
+  color: var(--bg);
+  background: var(--accent);
+}
+
+/* ============================================================ 1. SIGNAL
+   Dark, minimal, one neon. The default, and the only theme that matches the
+   chat window. */
+
+[data-theme='signal'] .alert__wedge {
+  display: block;
+  inset: 0;
+  background: radial-gradient(70vmin 55vmin at 12% 0%, var(--accent-soft), transparent 70%);
+}
+
+[data-theme='signal'] .alert__disc {
+  display: block;
+  right: -14vmin;
+  bottom: -18vmin;
+  width: 52vmin;
+  height: 52vmin;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  opacity: 0.18;
+}
+
+[data-theme='signal'] .alert__bars {
+  display: block;
+  left: 8vmin;
+  top: 5.2vmin;
+  width: 7vmin;
+  height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 14px var(--accent);
+}
+
+[data-theme='signal'] .alert__top {
+  padding-top: 2.4vmin;
+}
+
+[data-theme='signal'] .alert__title {
+  text-shadow: 0 0 60px rgba(45, 225, 163, 0.18);
+}
+
+/* ==================================================== 2. CONSTRUCTIVIST
+   Cream paper, red diagonal, poster type. Two fixed zones so cream type only
+   ever lands on red and ink type only on paper. */
+
+[data-theme='constructivist'] {
+  --bg: #f0e9da;
+  --fg: #14110e;
+  --fg-soft: rgba(20, 17, 14, 0.6);
+  --accent: #d92b1c;
+  --btn-fg: #f0e9da;
+  --btn-bg: #14110e;
+  --btn-shadow: #d92b1c;
+}
+
+[data-theme='constructivist'] .alert__wedge {
+  display: block;
+  inset: 0;
+  background: var(--accent);
+  /* Bottoms out at 44%; the paper zone starts at 46%. */
+  clip-path: polygon(0 0, 100% 0, 100% 28%, 0 44%);
+  animation: sweep 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes sweep {
+  from {
+    transform: translateX(-16%);
+  }
+}
+
+[data-theme='constructivist'] .alert__disc {
+  display: block;
+  right: -8vmin;
+  bottom: -10vmin;
+  width: 34vmin;
+  height: 34vmin;
+  border: 2vmin solid var(--fg);
+  border-radius: 50%;
+  opacity: 0.12;
+}
+
+[data-theme='constructivist'] .alert__bars {
+  display: block;
+  right: 6vmin;
+  top: 6vmin;
+  width: 16vmin;
+  height: 5vmin;
+  background: repeating-linear-gradient(to bottom, var(--bg) 0 1vmin, transparent 1vmin 2vmin);
+}
+
+[data-theme='constructivist'] .alert__inner {
+  display: grid;
+  grid-template-rows: 46% 54%;
+  padding: 5vmin 8vmin 6vmin;
+}
+
+[data-theme='constructivist'] .alert__tag,
+[data-theme='constructivist'] .alert__title {
+  color: var(--bg);
+}
+
+[data-theme='constructivist'] .alert__bottom {
+  flex: none;
+  padding-top: 1.5vmin;
+}
+
+[data-theme='constructivist'] .alert__queue {
+  color: var(--bg);
+  background: var(--fg);
+}
+
+/* ========================================================== 3. TERMINAL
+   Monospace, hairlines, no decoration. Same language as the chat window. */
+
+[data-theme='terminal'] {
+  --bg: #080b0e;
+  --surface: #10181e;
+  --fg: #d9e6e4;
+  --accent: #2de1a3;
+  --btn-fg: #06130f;
+  --btn-bg: #2de1a3;
+  --title-font: var(--mono);
+  --body-font: var(--mono);
+}
+
+[data-theme='terminal'] .alert__inner {
+  padding: 5vmin 6vmin;
+  border: 1px solid var(--accent);
+  margin: 2.5vmin;
+  height: calc(100% - 5vmin);
+}
+
+[data-theme='terminal'] .alert__title {
+  font-size: clamp(2.4rem, 9vmin, 7rem);
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+[data-theme='terminal'] .alert__title::before {
+  content: '*** ';
+  color: var(--accent);
+}
+
+[data-theme='terminal'] .alert__title::after {
+  content: ' ***';
+  color: var(--accent);
+}
+
+[data-theme='terminal'] .alert__from {
+  font-family: var(--mono);
+  font-size: clamp(0.8rem, 1.7vmin, 1.3rem);
+  letter-spacing: 0.14em;
+}
+
+[data-theme='terminal'] .alert__body {
+  font-size: clamp(1.1rem, 3.4vmin, 2.8rem);
+  line-height: 1.35;
+  text-transform: none;
+  border: 1px solid rgba(45, 225, 163, 0.42);
+  padding: 2vmin 2.4vmin;
+  max-width: 100%;
+}
+
+[data-theme='terminal'] .alert__body::before {
+  content: '> ';
+  color: var(--accent);
+}
+
+[data-theme='terminal'] .alert__ack {
+  font-family: var(--mono);
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+[data-theme='terminal'] .alert__ack:hover:not(:disabled) {
+  color: var(--bg);
+  background: var(--accent);
+}
+
+/* ============================================================= 4. PANEL
+   Hazard stripes and a warning lamp, borrowed from machine consoles. */
+
+[data-theme='panel'] {
+  --bg: #141210;
+  --fg: #ffe9c7;
+  --fg-soft: rgba(255, 233, 199, 0.6);
+  --accent: #ffb020;
+  --btn-fg: #2a1a00;
+  --btn-bg: #f5a524;
+  --lamp: #ff3b18;
+}
+
+[data-theme='panel'] .alert__wedge,
+[data-theme='panel'] .alert__bars {
+  display: block;
+  left: 0;
+  right: 0;
+  height: 2.4vmin;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--accent) 0 2vmin,
+    var(--bg) 2vmin 4vmin
+  );
+}
+
+[data-theme='panel'] .alert__wedge {
+  top: 0;
+}
+
+[data-theme='panel'] .alert__bars {
+  bottom: 0;
+}
+
+/* The disc becomes the indicator lamp. */
+[data-theme='panel'] .alert__disc {
+  display: block;
+  left: 8vmin;
+  top: 7.5vmin;
+  width: 5vmin;
+  height: 5vmin;
+  border-radius: 50%;
+  background: var(--lamp);
+  box-shadow:
+    0 0 0 0.8vmin rgba(255, 59, 24, 0.16),
+    0 0 6vmin 1vmin rgba(255, 59, 24, 0.5);
+  animation: lamp 1.1s steps(1, end) infinite;
+}
+
+@keyframes lamp {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+[data-theme='panel'] .alert__inner {
+  padding: 14vmin 8vmin 8vmin;
+}
+
+[data-theme='panel'] .alert__title {
+  color: var(--accent);
+  letter-spacing: 0.16em;
+}
+
+[data-theme='panel'] .alert__ack {
+  border-bottom: 0.6vmin solid #a86a05;
+}
+
+/* ========================================================== 5. PHOSPHOR
+   CRT scanlines and green glow. */
+
+[data-theme='phosphor'] {
+  --bg: #030603;
+  --fg: #46ff8c;
+  --fg-soft: rgba(70, 255, 140, 0.6);
+  --accent: #46ff8c;
+  --btn-fg: #030603;
+  --btn-bg: #46ff8c;
+  --title-font: var(--mono);
+  --body-font: var(--mono);
+}
+
+/* The wedge becomes the scanline overlay, above everything. */
+[data-theme='phosphor'] .alert__wedge {
+  display: block;
+  inset: 0;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    rgba(0, 0, 0, 0) 0 2px,
+    rgba(0, 0, 0, 0.4) 2px 4px
+  );
+}
+
+[data-theme='phosphor'] .alert__disc {
+  display: block;
+  inset: 0;
+  width: auto;
+  height: auto;
+  background: radial-gradient(ellipse at 50% 42%, rgba(70, 255, 140, 0.14), transparent 68%);
+}
+
+[data-theme='phosphor'] .alert__inner {
+  text-shadow: 0 0 9px rgba(70, 255, 140, 0.75);
+}
+
+[data-theme='phosphor'] .alert__title {
+  font-size: clamp(2.4rem, 9vmin, 7rem);
+  letter-spacing: 0.18em;
+}
+
+[data-theme='phosphor'] .alert__from {
+  font-family: var(--mono);
+  font-size: clamp(0.8rem, 1.7vmin, 1.3rem);
+  letter-spacing: 0.14em;
+}
+
+[data-theme='phosphor'] .alert__body {
+  font-size: clamp(1.1rem, 3.4vmin, 2.8rem);
+  line-height: 1.35;
+  text-transform: none;
+  max-width: 100%;
+}
+
+[data-theme='phosphor'] .alert__body::before {
+  content: '> ';
+}
+
+[data-theme='phosphor'] .alert__ack {
+  font-family: var(--mono);
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+[data-theme='phosphor'] .alert__ack::before {
+  content: '[ ';
+}
+
+[data-theme='phosphor'] .alert__ack::after {
+  content: ' ]';
+}
+
+[data-theme='phosphor'] .alert__ack:hover:not(:disabled) {
+  color: var(--bg);
+  background: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alert,
+  .alert__wedge,
+  .alert__disc {
+    animation: none;
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "zerleg",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zerleg Chat - serverless peer-to-peer LAN chat with instant fullscreen urgent alerts",
+  "scripts": {
+    "setup": "node scripts/setup.mjs",
+    "dev": "npm --prefix desktop run dev",
+    "build": "npm --prefix desktop run build",
+    "typecheck": "npm --prefix desktop run typecheck",
+    "dist": "npm --prefix desktop run dist",
+    "fake-user": "npm --prefix desktop run fake-user --",
+    "icons": "node scripts/make-icons.mjs",
+    "share": "node scripts/share.mjs",
+    "dist:mac": "npm --prefix desktop run dist:mac"
+  }
+}

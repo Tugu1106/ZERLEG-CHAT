@@ -1,0 +1,56 @@
+appId: com.zerleg.app
+productName: Zerleg Chat
+copyright: Zerleg Chat
+
+directories:
+  buildResources: resources
+  output: release
+
+files:
+  - out/**/*
+  - package.json
+
+extraResources:
+  # Tray icons are loaded at runtime from process.resourcesPath. The @2x
+  # variants must ship too, or macOS menu bars render a blurry 1x icon.
+  - from: resources
+    to: .
+    filter:
+      - '*.png'
+
+win:
+  icon: resources/icon.png
+  target:
+    - target: nsis
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Zerleg Chat
+
+mac:
+  icon: resources/icon.png
+  category: public.app-category.productivity
+  darkModeSupport: true
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+    - target: zip
+      arch: [arm64, x64]
+  extendInfo:
+    # macOS asks before letting an app talk to the local network. Without this
+    # string the prompt is unexplained, and if it is denied, peer discovery
+    # fails silently - the app looks fine and finds nobody.
+    NSLocalNetworkUsageDescription: >-
+      Zerleg Chat finds your colleagues on this network and delivers messages
+      directly to them. Without this it cannot see anyone.
+
+linux:
+  icon: resources/icon.png
+  category: Network
+  target:
+    - AppImage
