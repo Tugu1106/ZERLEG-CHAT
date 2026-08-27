@@ -112,6 +112,9 @@ export interface RendererApi {
   acknowledgeUrgent(messageId: string): Promise<void>;
   dismissUrgent(messageId: string): Promise<void>;
 
+  /** Removes a peer and their conversation from this machine. */
+  forgetPeer(id: string): Promise<void>;
+
   hideWindow(): Promise<void>;
   quit(): Promise<void>;
 

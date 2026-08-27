@@ -62,6 +62,11 @@ export interface User {
   name: string;
   online: boolean;
   lastSeen: number;
+  /** When this peer was first seen. Absent for entries saved before v1.1. */
+  firstSeen?: number;
+  /** Where we currently reach them. Only set while they are online. */
+  address?: string;
+  port?: number;
 }
 
 export interface ChatMessage {

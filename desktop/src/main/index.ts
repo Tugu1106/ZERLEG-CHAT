@@ -81,6 +81,8 @@ function registerIpc(): void {
     alerts.dismiss(messageId);
   });
 
+  ipcMain.handle('peers:forget', (_event, id: string) => node.forgetPeer(id));
+
   ipcMain.handle('window:hide', () => getMainWindow()?.hide());
   ipcMain.handle('app:quit', () => quit());
 }

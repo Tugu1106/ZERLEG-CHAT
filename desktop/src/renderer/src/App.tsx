@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { PeerDetails } from './PeerDetails';
 import { SettingsDialog } from './SettingsDialog';
 import { BROADCAST_TARGET } from '../../shared/protocol';
 import type { ChatMessage, NetState, Settings, User } from '../../shared/ipc';
@@ -52,6 +53,7 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [showPeer, setShowPeer] = useState(false);
 
   const myId = state?.me?.id;
   // Read inside the message listener, which is registered once.
@@ -239,11 +241,23 @@ export function App() {
                   : 'Offline - urgent messages will be delivered when they return'}
             </p>
           </div>
-          {state?.address && (
-            <span className="server-chip" title="This machine on the network">
-              {state.address}:{state.port}
-            </span>
-          )}
+          <div className="chat__head-right">
+            {activePeer && (
+              <button
+                type="button"
+                className="icon-button"
+                title="Who is this?"
+                onClick={() => setShowPeer(true)}
+              >
+                i
+              </button>
+            )}
+            {state?.address && (
+              <span className="server-chip" title="This machine on the network">
+                {state.address}:{state.port}
+              </span>
+            )}
+          </div>
         </header>
 
         {!ready && (
@@ -352,6 +366,23 @@ export function App() {
           </div>
         </footer>
       </main>
+
+      {showPeer && activePeer && (
+        <PeerDetails
+          peer={activePeer}
+          onClose={() => setShowPeer(false)}
+          onForget={async (id) => {
+            await window.api.forgetPeer(id);
+            // Forgetting deletes messages, and the message list only ever merges,
+            // so re-read the snapshot rather than trying to patch state.
+            const snapshot = await window.api.getSnapshot();
+            setState(snapshot.state);
+            setMessages(snapshot.history ?? []);
+            setShowPeer(false);
+            setActive(BROADCAST_TARGET);
+          }}
+        />
+      )}
 
       {showSettings && settings && (
         <SettingsDialog

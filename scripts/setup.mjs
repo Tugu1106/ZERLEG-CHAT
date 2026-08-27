@@ -31,4 +31,4 @@ for (const name of packages) {
   await run(resolve(root, name));
 }
 
-console.log('\nBoth packages installed.');
+console.log('\nReady. Run `npm run dev` to start it, or `npm run dist` to build the installer.');

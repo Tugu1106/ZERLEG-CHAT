@@ -881,3 +881,86 @@ textarea {
   opacity: 0.45;
   cursor: progress;
 }
+
+/* ------------------------------------------------------ peer details panel */
+
+.chat__head-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px 14px;
+  align-items: start;
+}
+
+.facts dt {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  padding-top: 2px;
+}
+
+.facts dd {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.facts dd small {
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--dim);
+}
+
+.facts code {
+  /* The identifying values are the point of this panel - let them be copied. */
+  user-select: text;
+  font-size: 11.5px;
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.facts__id {
+  font-size: 11px;
+}
+
+.facts__none {
+  color: var(--dim);
+}
+
+/* Keeps the status pip on the same line as its label. */
+.facts__inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm {
+  padding: 11px 12px;
+  background: rgba(255, 77, 109, 0.08);
+  border-left: 2px solid var(--urgent);
+}
+
+.confirm p {
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.confirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 11px;
+}
+
+.send--danger {
+  color: #17070c;
+  background: var(--urgent);
+}

@@ -17,7 +17,7 @@ interface PendingDelivery {
 interface Data {
   messages: ChatMessage[];
   /** Everyone we have ever seen, so offline people still appear in the list. */
-  knownPeers: Record<UserId, { name: string; lastSeen: number }>;
+  knownPeers: Record<UserId, { name: string; lastSeen: number; firstSeen?: number }>;
   /** Acknowledgements for urgent messages we sent. */
   acks: UrgentAck[];
   /** Urgent messages waiting for a recipient to come back online. */
@@ -106,21 +106,53 @@ export class Store {
   // --------------------------------------------------------------------- peers
 
   rememberPeer(id: UserId, name: string): void {
-    this.data.knownPeers[id] = { name, lastSeen: Date.now() };
+    const existing = this.data.knownPeers[id];
+    this.data.knownPeers[id] = {
+      name,
+      lastSeen: Date.now(),
+      // Keep the original sighting; it is the useful half of "who is this?".
+      firstSeen: existing?.firstSeen ?? Date.now(),
+    };
     this.scheduleSave();
   }
 
-  /** Everyone ever seen, marked online according to `onlineIds`. */
-  users(onlineIds: Set<UserId>, live: Map<UserId, string>): User[] {
+  /**
+   * Drops a peer and everything tied to them. Someone still on the network will
+   * reappear within a heartbeat - this is for clearing out stale entries.
+   */
+  forgetPeer(id: UserId): void {
+    delete this.data.knownPeers[id];
+    this.data.messages = this.data.messages.filter((m) => m.from !== id && m.to !== id);
+    this.data.acks = this.data.acks.filter((a) => a.by !== id);
+    this.data.pending = this.data.pending.filter((p) => p.to !== id);
+    this.saveNow();
+  }
+
+  /** Everyone ever seen; entries in `live` are marked online and carry an address. */
+  users(live: Map<UserId, { name: string; address: string; port: number }>): User[] {
     const all = new Map<UserId, User>();
 
     for (const [id, info] of Object.entries(this.data.knownPeers)) {
-      all.set(id, { id, name: info.name, online: false, lastSeen: info.lastSeen });
+      all.set(id, {
+        id,
+        name: info.name,
+        online: false,
+        lastSeen: info.lastSeen,
+        firstSeen: info.firstSeen,
+      });
     }
-    // Live names win: someone may have renamed themselves since we last saw them.
-    for (const id of onlineIds) {
-      const name = live.get(id) ?? all.get(id)?.name ?? 'Unknown';
-      all.set(id, { id, name, online: true, lastSeen: Date.now() });
+    // Live data wins: someone may have renamed or moved since we last saw them.
+    for (const [id, peer] of live) {
+      const known = all.get(id);
+      all.set(id, {
+        id,
+        name: peer.name || known?.name || 'Unknown',
+        online: true,
+        lastSeen: Date.now(),
+        firstSeen: known?.firstSeen,
+        address: peer.address,
+        port: peer.port,
+      });
     }
 
     return [...all.values()].sort((a, b) => a.name.localeCompare(b.name));

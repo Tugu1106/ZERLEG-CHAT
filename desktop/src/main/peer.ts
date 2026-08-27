@@ -81,9 +81,18 @@ export class PeerNode extends EventEmitter {
   private refreshUsers(): void {
     const store = this.store;
     if (!store) return;
-    const live = new Map<UserId, string>();
-    for (const peer of this.presence.list()) live.set(peer.id, peer.name);
-    this.patch({ users: store.users(new Set(live.keys()), live) });
+    const live = new Map<UserId, { name: string; address: string; port: number }>();
+    for (const peer of this.presence.list()) {
+      // hosts[0] is the address we last delivered to successfully.
+      live.set(peer.id, { name: peer.name, address: peer.hosts[0] ?? '', port: peer.port });
+    }
+    this.patch({ users: store.users(live) });
+  }
+
+  /** Removes a peer and their history from this machine. */
+  forgetPeer(id: UserId): void {
+    this.store?.forgetPeer(id);
+    this.refreshUsers();
   }
 
   async start(): Promise<void> {

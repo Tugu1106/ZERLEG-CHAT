@@ -24,6 +24,8 @@ const api = {
   acknowledgeUrgent: (messageId: string) => ipcRenderer.invoke('urgent:acknowledge', messageId),
   dismissUrgent: (messageId: string) => ipcRenderer.invoke('urgent:dismiss', messageId),
 
+  forgetPeer: (id: string) => ipcRenderer.invoke('peers:forget', id),
+
   hideWindow: () => ipcRenderer.invoke('window:hide'),
   quit: () => ipcRenderer.invoke('app:quit'),
 
