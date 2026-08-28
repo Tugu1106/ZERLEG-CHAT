@@ -1,6 +1,6 @@
 {
   "name": "zerleg",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "description": "Zerleg Chat - serverless peer-to-peer LAN chat with instant fullscreen urgent alerts",
   "scripts": {

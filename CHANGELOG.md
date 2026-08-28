@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+## 1.1.1
 **Changed**
 
 - Releases are now built and published by GitHub Actions from the pushed tag,
