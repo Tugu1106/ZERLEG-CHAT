@@ -40,7 +40,6 @@ jobs:
             optional: true
             artifacts: |
               desktop/release/*.dmg
-              desktop/release/*.zip
 
     steps:
       - uses: actions/checkout@v4

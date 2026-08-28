@@ -39,12 +39,13 @@ mac:
   icon: resources/icon.png
   category: public.app-category.productivity
   darkModeSupport: true
-  artifactName: ZerlegChat-${arch}.${ext}
+  # One universal .dmg rather than four files: nobody should have to know
+  # whether their Mac is Intel or Apple Silicon, and the .zip target only
+  # exists to feed an auto-updater, which this app does not have.
+  artifactName: ZerlegChat.${ext}
   target:
     - target: dmg
-      arch: [arm64, x64]
-    - target: zip
-      arch: [arm64, x64]
+      arch: [universal]
   extendInfo:
     # macOS asks before letting an app talk to the local network. Without this
     # string the prompt is unexplained, and if it is denied, peer discovery

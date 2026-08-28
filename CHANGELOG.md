@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+**Changed**
+
+- macOS now builds a single universal `.dmg` that runs on both Intel and Apple
+  Silicon, instead of four separate files. The `.zip` target is gone; it only
+  fed an auto-updater this app does not have.
+
 **Fixed**
 
 - The macOS build failed in vite with `Cannot find module

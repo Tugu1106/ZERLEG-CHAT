@@ -21,6 +21,15 @@ acknowledge it.
   <sub>Free &middot; no account &middot; no server &middot; nothing to configure</sub>
 </p>
 
+<p align="center">
+  <sub>
+    On a Mac? <a href="https://github.com/Tugu1106/ZERLEG-CHAT/releases/latest">ZerlegChat.dmg</a>
+    is attached to the latest release &mdash; but it <strong>has never been run on real
+    hardware</strong>. It builds, and that is all anyone knows. If you try it,
+    <a href="https://github.com/Tugu1106/ZERLEG-CHAT/issues/new">say how it went</a>.
+  </sub>
+</p>
+
 ## Three steps, then it just works
 
 1. **[Download](https://github.com/Tugu1106/ZERLEG-CHAT/releases/latest/download/ZerlegChat-Setup.exe)** and run it. No admin rights needed.
@@ -172,8 +181,11 @@ Windows. On a Mac, with the repo checked out:
 
 ```bash
 npm run setup
-npm run dist:mac        # -> desktop/release/*.dmg  (arm64 + x64)
+npm run dist:mac        # -> desktop/release/ZerlegChat.dmg (universal)
 ```
+
+Or just take the `.dmg` attached to the latest release - GitHub Actions builds
+it on a macOS runner for every tag, so you do not need a Mac to produce one.
 
 **Gatekeeper is stricter than SmartScreen.** Without an Apple Developer ID
 ($99/yr) and notarization, macOS will refuse to open the app on a normal
@@ -197,9 +209,11 @@ away from what the user is looking at), the menu-bar icon is a template image so
 it inverts with the menu bar, `flashFrame` is replaced by a dock bounce, and
 clicking the dock icon reveals the hidden chat window.
 
-> **Untested.** All of the above is written but has never been run on a Mac —
-> I had no macOS machine available. Expect to shake out small issues on the
-> first real build.
+> **Builds, but untested.** CI compiles a universal `.dmg` for every release,
+> so the build is real. Whether the app actually *works* on macOS - tray icon,
+> the fullscreen alert surfacing above other windows, the Local Network prompt -
+> is unknown, because nobody has run it. Treat the first Mac install as a test,
+> and please report what happens.
 
 ### Linux
 
