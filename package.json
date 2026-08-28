@@ -13,7 +13,8 @@
     "icons": "node scripts/make-icons.mjs",
     "share": "node scripts/share.mjs",
     "dist:mac": "npm --prefix desktop run dist:mac",
-    "release": "node scripts/release.mjs"
+    "release": "node scripts/release.mjs",
+    "check:ci": "node scripts/check-workflow.mjs"
   },
   "license": "MIT"
 }

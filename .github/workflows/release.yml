@@ -62,8 +62,8 @@ jobs:
         run: |
           set -o pipefail
           if ! npm run ${{ matrix.script }} 2>&1 | tee build.log; then
-            echo "::error::$(tail -c 2500 build.log | tr '
-' '  ')"
+            # Squash whitespace so the tail fits in a single-line annotation.
+            echo "::error::$(tail -c 2500 build.log | tr -s '[:space:]' ' ')"
             exit 1
           fi
         env:

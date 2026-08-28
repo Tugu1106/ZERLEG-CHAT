@@ -4,6 +4,10 @@
 
 **Fixed**
 
+- The release workflow file was invalid YAML, so GitHub rejected it before
+  running a single step. `npm run check:ci` now parses the workflow locally so
+  that cannot reach the repo again.
+
 - The macOS build failed because the app icon was 256x256; electron-builder
   needs at least 512x512 to generate an `.icns`. It is now 1024x1024.
 
