@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+**Changed**
+
+- Releases are now built and published by GitHub Actions from the pushed tag,
+  so a release can no longer contain a stale or mismatched installer. macOS
+  builds are produced too, though still untested.
+- `npm run release <patch|minor|major>` bumps the version everywhere and
+  promotes the changelog in one step.
+
 ## 1.1.0
 
 First public release.
