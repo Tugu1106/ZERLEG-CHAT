@@ -61,9 +61,11 @@ jobs:
   publish:
     name: Publish release
     needs: build
-    # Windows alone is enough to release; macOS is still unverified, so a
-    # failure there must not block shipping to the people who actually use it.
-    if: always() && !cancelled()
+    # Only tags publish. A manual run from the Actions tab therefore builds
+    # everything as a smoke test without creating a release.
+    # Windows alone is enough to ship; macOS is still unverified, so a failure
+    # there must not block the people who actually use it.
+    if: always() && !cancelled() && startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
