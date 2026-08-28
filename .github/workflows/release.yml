@@ -54,12 +54,30 @@ jobs:
       - name: Install
         run: npm run setup
 
+      # The build output is captured so a failure surfaces as an annotation and
+      # an artifact, instead of being buried in a log only a signed-in user can
+      # open.
       - name: Build
-        run: npm run ${{ matrix.script }}
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! npm run ${{ matrix.script }} 2>&1 | tee build.log; then
+            echo "::error::$(tail -c 2500 build.log | tr '
+' '  ')"
+            exit 1
+          fi
         env:
           # No Apple Developer ID, so stop electron-builder hunting for one and
           # failing the macOS job. The build is ad-hoc signed instead.
           CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Keep the build log even when the build fails
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}-build-log
+          path: build.log
+          if-no-files-found: ignore
 
       - uses: actions/upload-artifact@v4
         with:
