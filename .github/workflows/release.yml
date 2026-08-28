@@ -6,6 +6,10 @@ name: Release
 on:
   push:
     tags: ['v*']
+    # Pushing to this branch builds everything but publishes nothing (the
+    # publish job is gated on tags), so the pipeline can be exercised without
+    # spending a version number or creating a release.
+    branches: ['ci-test']
   # Lets you exercise the build from the Actions tab without publishing.
   workflow_dispatch:
 
