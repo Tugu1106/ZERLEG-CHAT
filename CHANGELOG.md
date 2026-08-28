@@ -4,6 +4,10 @@
 
 **Fixed**
 
+- The macOS build failed in vite with `Cannot find module
+  @rollup/rollup-darwin-arm64`. A package-lock written on Windows omits other
+  platforms' optional binaries (npm/cli#4828), so CI now installs without the
+  lockfile on macOS.
 - The release workflow file was invalid YAML, so GitHub rejected it before
   running a single step. `npm run check:ci` now parses the workflow locally so
   that cannot reach the repo again.

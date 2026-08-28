@@ -52,7 +52,16 @@ jobs:
           cache-dependency-path: desktop/package-lock.json
 
       - name: Install
-        run: npm run setup
+        shell: bash
+        run: |
+          # npm/cli#4828: a package-lock written on one platform omits another
+          # platform's optional binaries, so a Windows-generated lock leaves
+          # macOS without @rollup/rollup-darwin-arm64 and the build dies in
+          # vite. Install fresh on macOS; Windows keeps the locked versions.
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            rm -f desktop/package-lock.json
+          fi
+          npm run setup
 
       # The build output is captured so a failure surfaces as an annotation and
       # an artifact, instead of being buried in a log only a signed-in user can
