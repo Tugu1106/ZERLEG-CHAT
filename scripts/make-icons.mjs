@@ -172,7 +172,9 @@ const MAC_ON = { template: true, alpha: 1 };
 const MAC_OFF = { template: true, alpha: 0.38 };
 
 const targets = [
-  ['desktop/resources/icon.png', 256, ALERT],
+  // 1024 because electron-builder needs at least 512x512 to generate a macOS
+  // .icns; anything smaller fails the mac build outright.
+  ['desktop/resources/icon.png', 1024, ALERT],
   ['desktop/resources/tray.png', 32, ALERT],
   ['desktop/resources/tray-offline.png', 32, MUTED],
   ['desktop/resources/tray-alert.png', 32, ATTENTION],

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+**Fixed**
+
+- The macOS build failed because the app icon was 256x256; electron-builder
+  needs at least 512x512 to generate an `.icns`. It is now 1024x1024.
+
 ## 1.1.1
 **Changed**
 
