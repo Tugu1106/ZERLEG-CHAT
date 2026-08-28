@@ -11,28 +11,66 @@ fullscreen urgent message**: when someone sends you an urgent message, your
 screen is taken over by an always-on-top alert that stays there until you
 acknowledge it.
 
-```
-┌──────────────────────────────────────────┐
-│                                          │
-│              🚨 URGENT                   │
-│                                          │
-│            Message from Tugu             │
-│                                          │
-│        "COME TO THE MEETING ROOM"        │
-│                                          │
-│              [ ACKNOWLEDGE ]             │
-│                                          │
-└──────────────────────────────────────────┘
-```
+<p align="center">
+  <a href="https://github.com/Tugu1106/ZERLEG-CHAT/releases/latest/download/ZerlegChat-Setup.exe">
+    <img src="https://img.shields.io/badge/Download%20for%20Windows-2de1a3?style=for-the-badge&logo=windows&logoColor=0a0f14&labelColor=0a0f14" alt="Download for Windows">
+  </a>
+</p>
 
-## Using it
+<p align="center">
+  <sub>Free &middot; no account &middot; no server &middot; nothing to configure</sub>
+</p>
 
-Build the installer, hand out the `.exe`, everyone runs it. That is the whole
-deployment story.
+## Three steps, then it just works
+
+1. **[Download](https://github.com/Tugu1106/ZERLEG-CHAT/releases/latest/download/ZerlegChat-Setup.exe)** and run it. No admin rights needed.
+2. Allow it through the firewall when Windows asks (**Private networks**).
+3. Open Settings, type your name.
+
+That is the whole setup. Everyone else who does the same appears in your list
+automatically - there is no server to point at, no address to type, and nobody
+has to keep a machine running.
+
+![The chat window](docs/chat.png)
+
+When someone sends an urgent message, this takes over the whole screen and stays
+until you acknowledge it:
+
+![The urgent alert](docs/urgent-signal.png)
+
+The alert style travels with the message - the sender picks how their alerts look
+on everyone else's screen:
+
+![The Constructivist alert theme](docs/urgent-constructivist.png)
+
+
+## Read this before deploying it
+
+Zerleg Chat is built for a **trusted office network**. It has deliberately
+simple security, and you should know exactly what that means:
+
+* **No authentication.** Anyone who can reach your machine on this network can
+  appear in your contact list under any name they choose, and can send you a
+  fullscreen alert. There is no way to prove someone is who their name says.
+* **No encryption.** Messages cross the network in plain text. Anyone able to
+  capture traffic on the segment can read them.
+* **It can take over your screen.** That is the entire point, but it also means
+  a malicious peer on the same network can interrupt you at will.
+
+That is an acceptable trade for a small office where you know everyone on the
+LAN. It is **not** suitable for a shared/coworking network, a university
+network, public Wi-Fi, or anywhere you do not trust every device on the subnet.
+
+There is also **no auto-update**: if a fix ships, everyone reinstalls manually.
+
+## Building it yourself
+
+Only needed if you want to change something - most people should just use the
+download button above.
 
 ```bash
 npm run setup
-npm run dist       # -> desktop/release/Zerleg Chat Setup 1.0.0.exe
+npm run dist       # -> desktop/release/ZerlegChat-Setup.exe
 ```
 
 The installer is per-user (no admin rights), adds a Start Menu shortcut, and
@@ -70,7 +108,7 @@ Other options, in rough order of convenience:
 | Method | Notes |
 | ------ | ----- |
 | `npm run share` | Nothing to set up on their side, no accounts, no size limit |
-| USB stick | Copy `desktop/release/Zerleg Chat Setup 1.0.0.exe` |
+| USB stick | Copy `desktop/release/ZerlegChat-Setup.exe` |
 | Shared folder | Drop the `.exe` on a network share everyone can reach |
 | OneDrive / Google Drive / WeTransfer | Fine, but a cloud round-trip for a file that never needs to leave the building |
 | Email | Usually blocked: 99 MB exceeds most limits, and many servers strip `.exe` |

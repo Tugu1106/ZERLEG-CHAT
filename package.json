@@ -1,6 +1,6 @@
 {
   "name": "zerleg",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Zerleg Chat - serverless peer-to-peer LAN chat with instant fullscreen urgent alerts",
   "scripts": {
@@ -13,5 +13,6 @@
     "icons": "node scripts/make-icons.mjs",
     "share": "node scripts/share.mjs",
     "dist:mac": "npm --prefix desktop run dist:mac"
-  }
+  },
+  "license": "MIT"
 }
