@@ -1,0 +1,90 @@
+name: Release
+
+# Publishing is driven entirely by tags: push v1.2.0 and this builds the
+# installers on GitHub's own machines and attaches them to a release. Nothing
+# is built or uploaded by hand, so a release can never contain a stale binary.
+on:
+  push:
+    tags: ['v*']
+  # Lets you exercise the build from the Actions tab without publishing.
+  workflow_dispatch:
+
+permissions:
+  contents: write # needed to create the release
+
+jobs:
+  build:
+    name: Build ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            name: Windows
+            script: dist
+            artifacts: |
+              desktop/release/*.exe
+              desktop/release/*.blockmap
+          - os: macos-latest
+            name: macOS
+            script: dist:mac
+            artifacts: |
+              desktop/release/*.dmg
+              desktop/release/*.zip
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Install
+        run: npm run setup
+
+      - name: Build
+        run: npm run ${{ matrix.script }}
+        env:
+          # No Apple Developer ID, so stop electron-builder hunting for one and
+          # failing the macOS job. The build is ad-hoc signed instead.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: ${{ matrix.artifacts }}
+          if-no-files-found: error
+
+  publish:
+    name: Publish release
+    needs: build
+    # Windows alone is enough to release; macOS is still unverified, so a
+    # failure there must not block shipping to the people who actually use it.
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List what will be attached
+        run: ls -la artifacts
+
+      - name: Build release notes from CHANGELOG
+        run: node scripts/release-notes.mjs "${GITHUB_REF_NAME}" > RELEASE_NOTES.md
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          # Pulls the matching section out of CHANGELOG.md automatically.
+          body_path: RELEASE_NOTES.md
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -12,7 +12,8 @@
     "fake-user": "npm --prefix desktop run fake-user --",
     "icons": "node scripts/make-icons.mjs",
     "share": "node scripts/share.mjs",
-    "dist:mac": "npm --prefix desktop run dist:mac"
+    "dist:mac": "npm --prefix desktop run dist:mac",
+    "release": "node scripts/release.mjs"
   },
   "license": "MIT"
 }
