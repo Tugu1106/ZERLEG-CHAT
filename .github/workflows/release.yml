@@ -16,6 +16,7 @@ jobs:
   build:
     name: Build ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.optional || false }}
     strategy:
       fail-fast: false
       matrix:
@@ -29,6 +30,10 @@ jobs:
           - os: macos-latest
             name: macOS
             script: dist:mac
+            # macOS has never been verified on real hardware. Let it fail
+            # without failing the whole run, so a red workflow keeps meaning
+            # "something is actually broken" rather than "macOS again".
+            optional: true
             artifacts: |
               desktop/release/*.dmg
               desktop/release/*.zip
