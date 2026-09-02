@@ -387,6 +387,46 @@ npm --prefix desktop run dev -- --profile bob
 | Sender's style wins       | `fake-user --theme panel --urgent "hi"`          | alert appears in Panel whatever the receiver has chosen     |
 | Someone leaves            | quit one app                                     | it greys out in the other's sidebar within ~16s             |
 
+## "Could not reach them" - the firewall
+
+The single most likely problem, and it looks confusing: **you can see each other
+in the list, but sending fails.**
+
+Discovery uses UDP, which Windows Firewall lets through. Delivery uses a direct
+TCP connection, which it blocks unless the app is allowed. So presence works
+while messages do not.
+
+**Clicking "Cancel" on the firewall prompt makes this permanent.** Windows does
+not merely skip the rule - it writes a persistent *Block* rule, and Block beats
+Allow. Clicking "Allow" later will not fix it; the block has to be deleted.
+
+Fix it by running, **as Administrator**, on each affected machine:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/fix-firewall.ps1
+```
+
+That removes the stale Block rules and adds the correct Allow rule. Or do it by
+hand:
+
+```powershell
+Get-NetFirewallRule -DisplayName '*Zerleg*' | Where-Object { $_.Action -eq 'Block' } | Remove-NetFirewallRule
+
+New-NetFirewallRule -DisplayName "Zerleg Chat" -Direction Inbound `
+  -Program "$env:LOCALAPPDATA\Programs\Zerleg Chat\Zerleg Chat.exe" `
+  -Action Allow -Profile Private
+```
+
+Restart the app afterwards.
+
+Creating firewall rules requires administrator rights - that is a Windows
+restriction no application can work around. For a whole office, the tidy answer
+is to have IT deploy the rule once by Group Policy so nobody is ever prompted.
+
+Use a **program** rule rather than a port rule: the app falls back to a random
+TCP port when its preferred one is taken, so a port rule can silently stop
+working.
+
 ## Will it work on my network?
 
 "LAN" and "same Wi-Fi" are the same thing here - Wi-Fi *is* a local network. A

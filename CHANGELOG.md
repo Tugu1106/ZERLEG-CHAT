@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+**Added**
+
+- `scripts/fix-firewall.ps1` repairs the most common failure: clicking "Cancel"
+  on the Windows firewall prompt leaves a persistent Block rule, so people can
+  see each other but every message fails with "Could not reach them". Clicking
+  "Allow" afterwards does not help, because Block rules win.
+
 **Changed**
 
 - macOS now builds a single universal `.dmg` that runs on both Intel and Apple
