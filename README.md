@@ -130,8 +130,10 @@ Two things will confuse people, and both are expected:
    code-signed. They click **More info → Run anyway**. Some antivirus may also
    quarantine an unsigned installer.
 2. **The firewall prompt** on first launch. They must tick **Private networks**
-   and allow it. If they dismiss it, nobody can see them, and the app will look
-   like it is working while finding no one. To fix it afterwards: Windows
+   and click **Allow access**; it asks for an administrator, which is expected.
+   **Warn them not to click Cancel** - Windows writes a permanent Block rule,
+   clicking Allow later does not undo it, and the app then shows everyone in the
+   list while every message fails with "Could not reach them". To fix it afterwards: Windows
    Security → Firewall & network protection → Allow an app through firewall →
    find *Zerleg Chat* → tick Private.
 

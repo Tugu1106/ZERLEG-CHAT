@@ -135,11 +135,17 @@ const page = () => `<!doctype html>
       </p>
     </li>
     <li>
-      <h2>Allow it through the firewall</h2>
+      <h2>Allow it through the firewall &mdash; do not click Cancel</h2>
       <p>
         On first launch Windows asks about network access. Tick
-        <span class="warn">Private networks</span> and allow it. Without this nobody
-        can see you.
+        <span class="warn">Private networks</span> and click
+        <span class="warn">Allow access</span>. It will ask for an administrator,
+        which is normal &mdash; the app cannot receive messages without it.
+      </p>
+      <p style="margin-top:6px">
+        <strong>Clicking Cancel is hard to undo.</strong> Windows writes a permanent
+        block, and clicking Allow later will not fix it. You would see everyone in
+        your list but every message would fail.
       </p>
     </li>
     <li>
